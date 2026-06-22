@@ -105,4 +105,9 @@
     <SolidColorBrush x:Key="JT.Tag.DeleteForeground" Color="#fff"/>
     <SolidColorBrush x:Key="JT.Tag.DeleteHoverBackground" Color="#E81123"/>
 
+    <!-- 图片瀑布流 -->
+    <SolidColorBrush x:Key="JT.ImageGrid.Background" Color="#F5F5F5"/>
+    <SolidColorBrush x:Key="JT.ImageGrid.CellBackground" Color="#E8E8E8"/>
+
+
 </ResourceDictionary>

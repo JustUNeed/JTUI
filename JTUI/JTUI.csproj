@@ -19,6 +19,9 @@
 	  <Page Update="Themes\JTScrollBar.xaml">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Page>
+	
+  <PackageReference Include="VirtualizingWrapPanel" Version="2.5.1" />
+
 	</ItemGroup>
 
 </Project>

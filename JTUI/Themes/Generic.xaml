@@ -5,6 +5,8 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/Colors.Light.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTWindow.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/ImageGrid/JTImageGrid.xaml"/>
+
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
