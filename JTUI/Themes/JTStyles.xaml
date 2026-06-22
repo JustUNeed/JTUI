@@ -1,0 +1,21 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTWindow.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTScrollBar.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTButton.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTToggleSwitch.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTIconButton.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTToolTip.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTTextBox.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTMenu.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTNumberBox.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTComboBox.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTTag.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTTagControl.xaml"/>
+
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

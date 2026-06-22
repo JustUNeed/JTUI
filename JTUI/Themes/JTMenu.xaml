@@ -1,0 +1,198 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============ 菜单栏 Menu ============ -->
+    <Style TargetType="Menu">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource JT.Menu.Foreground}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Menu">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                        <ItemsPresenter/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- 菜单专用分隔线(关键:必须用这个 Key) -->
+    <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Height="1"
+                              Margin="24,4,4,4"
+                        Background="{DynamicResource JT.Menu.Separator}"
+                        SnapsToDevicePixels="True"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- ============ 右键菜单 ContextMenu ============ -->
+    <Style TargetType="ContextMenu">
+        <Setter Property="Background" Value="{DynamicResource JT.Menu.PopupBackground}"/>
+        <Setter Property="Foreground" Value="{DynamicResource JT.Menu.Foreground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource JT.Menu.PopupBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="3"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                 
+                        Padding="{TemplateBinding Padding}"
+                        SnapsToDevicePixels="True">
+                        <ItemsPresenter Grid.IsSharedSizeScope="True"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============ 子菜单弹出框模板(共用) ============ -->
+    <ControlTemplate x:Key="JTSubmenuContent" TargetType="MenuItem">
+        <Grid SnapsToDevicePixels="True">
+            <Border x:Name="Bd"
+                    Background="Transparent"
+                    CornerRadius="0"
+                    Padding="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 图标/勾选区 -->
+                    <ContentPresenter Grid.Column="0"
+                                      ContentSource="Icon"
+                                      Margin="24,0,0,0"
+                                      VerticalAlignment="Center"/>
+                    <!-- 文本 -->
+                    <ContentPresenter Grid.Column="1"
+                                      ContentSource="Header"
+                                      RecognizesAccessKey="True"
+                                      Margin="6,4,6,4"
+                                      VerticalAlignment="Center"/>
+                    <!-- 快捷键提示 -->
+                    <TextBlock Grid.Column="2"
+                               Text="{TemplateBinding InputGestureText}"
+                               Margin="0,0,12,0"
+                               Opacity="0.5"
+                               VerticalAlignment="Center"/>
+                    <!-- 子级箭头 -->
+                    <Path Grid.Column="3"
+                          x:Name="Arrow"
+                          Data="M0,0 L4,4 L0,8 Z"
+                          Fill="{DynamicResource JT.Menu.Foreground}"
+                          Margin="0,0,8,0"
+                          VerticalAlignment="Center"
+                          Visibility="Collapsed"/>
+                </Grid>
+            </Border>
+
+            <!-- 子菜单弹出 -->
+            <Popup x:Name="PART_Popup"
+                   Placement="Right"
+                   IsOpen="{TemplateBinding IsSubmenuOpen}"
+                   AllowsTransparency="True"
+                   Focusable="False"
+                   PopupAnimation="Fade">
+                <Border Background="{DynamicResource JT.Menu.PopupBackground}"
+                        BorderBrush="{DynamicResource JT.Menu.PopupBorder}"
+                        BorderThickness="1"
+                        CornerRadius="0"
+                        Padding="3">
+                    <ItemsPresenter Grid.IsSharedSizeScope="True"/>
+                </Border>
+            </Popup>
+        </Grid>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter TargetName="Bd" Property="Background"
+                        Value="{DynamicResource JT.Menu.HoverBackground}"/>
+            </Trigger>
+            <Trigger Property="HasItems" Value="True">
+                <Setter TargetName="Arrow" Property="Visibility" Value="Visible"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource JT.Menu.DisabledForeground}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+
+    
+    <!-- ============ 顶级菜单项模板(横向) ============ -->
+    <ControlTemplate x:Key="JTTopLevelHeader" TargetType="MenuItem">
+        <Border x:Name="Bd"
+                Background="Transparent"
+                CornerRadius="0"
+                Padding="0">
+            <Grid>
+                <ContentPresenter ContentSource="Header"
+                                  RecognizesAccessKey="True"
+                                  Margin="10,5"
+                                  VerticalAlignment="Center"/>
+                <!-- 顶级项的下拉弹出 -->
+                <Popup x:Name="PART_Popup"
+                       Placement="Bottom"
+                       IsOpen="{TemplateBinding IsSubmenuOpen}"
+                       AllowsTransparency="True"
+                       Focusable="False"
+                       PopupAnimation="Fade">
+                    <Border Background="{DynamicResource JT.Menu.PopupBackground}"
+                     
+                            CornerRadius="0"
+                            Padding="3">
+                        <ItemsPresenter Grid.IsSharedSizeScope="True"/>
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter TargetName="Bd" Property="Background"
+                        Value="{DynamicResource JT.Menu.HoverBackground}"/>
+            </Trigger>
+            <Trigger Property="IsSubmenuOpen" Value="True">
+                <Setter TargetName="Bd" Property="Background"
+                        Value="{DynamicResource JT.Menu.HoverBackground}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource JT.Menu.DisabledForeground}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- ============ MenuItem 样式:按角色切换模板 ============ -->
+    <Style TargetType="MenuItem">
+        <Setter Property="Foreground" Value="{DynamicResource JT.Menu.Foreground}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template" Value="{StaticResource JTSubmenuContent}"/>
+        <Style.Triggers>
+            <!-- Role=TopLevelHeader:菜单栏上的顶级项(文件/编辑/帮助) -->
+            <Trigger Property="Role" Value="TopLevelHeader">
+                <Setter Property="Template" Value="{StaticResource JTTopLevelHeader}"/>
+            </Trigger>
+            <!-- Role=TopLevelItem:菜单栏上没有子级的顶级项 -->
+            <Trigger Property="Role" Value="TopLevelItem">
+                <Setter Property="Template" Value="{StaticResource JTTopLevelHeader}"/>
+            </Trigger>
+            <!-- SubmenuHeader / SubmenuItem 用默认的 JTSubmenuContent -->
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

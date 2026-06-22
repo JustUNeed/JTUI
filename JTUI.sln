@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37216.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "JTool\Main.csproj", "{F07B10DD-6D4D-4C2E-9B72-82080D37D093}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JTUI", "JTUI\JTUI.csproj", "{07FDE5A3-8806-4511-89B0-DB42164C4BF6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F07B10DD-6D4D-4C2E-9B72-82080D37D093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F07B10DD-6D4D-4C2E-9B72-82080D37D093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F07B10DD-6D4D-4C2E-9B72-82080D37D093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F07B10DD-6D4D-4C2E-9B72-82080D37D093}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07FDE5A3-8806-4511-89B0-DB42164C4BF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07FDE5A3-8806-4511-89B0-DB42164C4BF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07FDE5A3-8806-4511-89B0-DB42164C4BF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07FDE5A3-8806-4511-89B0-DB42164C4BF6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {03E6192C-3BFB-469F-9B73-081742967B46}
+	EndGlobalSection
+EndGlobal

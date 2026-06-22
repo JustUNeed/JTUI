@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JTool": {
+      "commandName": "Project",
+      "hotReloadEnabled": false
+    }
+  }
+}

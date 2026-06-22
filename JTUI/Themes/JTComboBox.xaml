@@ -1,0 +1,188 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:JTUI.Controls">
+
+    <!-- 下拉项容器样式:与 MenuItem 视觉一致 -->
+    <Style x:Key="JTComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="Foreground" Value="{DynamicResource JT.Menu.Foreground}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border x:Name="Bd"
+                            Background="Transparent"
+                            CornerRadius="0"
+                            SnapsToDevicePixels="True">
+                        <!-- 与菜单项一致:左侧留 24 图标位,文本 6,4 内距 -->
+                        <ContentPresenter Margin="24,4,12,4"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- 悬停 / 键盘高亮:与菜单 HoverBackground 一致 -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource JT.Menu.HoverBackground}"/>
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource JT.Menu.HoverBackground}"/>
+                        </Trigger>
+                        <!-- 当前选中项:同样用 HoverBackground 标识,与菜单观感统一 -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource JT.Menu.HoverBackground}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource JT.Menu.DisabledForeground}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 展开框的 ToggleButton(整框可点击) -->
+    <ControlTemplate x:Key="JTComboBoxToggleTemplate" TargetType="{x:Type ToggleButton}">
+        <Border x:Name="Bd"
+                Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type controls:JTComboBox}}}"
+                BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType={x:Type controls:JTComboBox}}}"
+                BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType={x:Type controls:JTComboBox}}}"
+                CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType={x:Type controls:JTComboBox}}}"
+                SnapsToDevicePixels="True"/>
+    </ControlTemplate>
+
+    <!-- JTComboBox 主样式 -->
+    <Style TargetType="{x:Type controls:JTComboBox}">
+        <Setter Property="Background" Value="{DynamicResource JT.ComboBox.Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource JT.ComboBox.Foreground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource JT.ComboBox.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="8,3"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Height" Value="26"/>
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource JTComboBoxItemStyle}"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:JTComboBox}">
+                    <Grid>
+                        <!-- 背景框(可点击展开) -->
+                        <ToggleButton x:Name="ToggleButton"
+                                      Template="{StaticResource JTComboBoxToggleTemplate}"
+                                      Focusable="False"
+                                      ClickMode="Press"
+                                      IsChecked="{Binding IsDropDownOpen,
+                                                  Mode=TwoWay,
+                                                  RelativeSource={RelativeSource TemplatedParent}}"/>
+
+                        <!-- 左侧:选中内容 / 占位提示 -->
+                        <ContentPresenter x:Name="ContentSite"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          IsHitTestVisible="False"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
+
+                        <TextBlock x:Name="Placeholder"
+                                   Margin="{TemplateBinding Padding}"
+                                   Text="{TemplateBinding Placeholder}"
+                                   Foreground="{DynamicResource JT.ComboBox.Placeholder}"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False"
+                                   Visibility="Collapsed"/>
+
+                        <!-- 右侧:Blender 风格细线下拉箭头 -->
+                        <Path x:Name="Arrow"
+                              Width="8" Height="4"
+                              Margin="0,0,8,0"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Center"
+                              Stretch="Fill"
+                              Stroke="{DynamicResource JT.ComboBox.Arrow}"
+                              StrokeThickness="1"
+                              StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              StrokeLineJoin="Round"
+                              Data="M 0,0 L 1,1 L 2,0"
+                              IsHitTestVisible="False"/>
+
+                        <!-- 下拉弹出层:与菜单弹出框完全一致 -->
+                        <Popup x:Name="PART_Popup"
+                               Placement="Bottom"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Fade"
+                               IsOpen="{TemplateBinding IsDropDownOpen}">
+                            <Border x:Name="DropDownBorder"
+                                    MinWidth="{Binding ActualWidth, ElementName=ToggleButton}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                    Margin="0,2,0,0"
+                                    Background="{DynamicResource JT.Menu.PopupBackground}"
+                                    BorderBrush="{DynamicResource JT.Menu.PopupBorder}"
+                                    BorderThickness="1"
+                                    CornerRadius="0"
+                                    Padding="3"
+                                    SnapsToDevicePixels="True">
+                                <ScrollViewer SnapsToDevicePixels="True">
+                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- 未选中任何项 → 显示占位 -->
+                        <Trigger Property="SelectionBoxItem" Value="{x:Null}">
+                            <Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+
+                        <!-- 悬停:边框高亮 -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{DynamicResource JT.ComboBox.HoverBorder}"/>
+                        </Trigger>
+
+                        <!-- 展开时:箭头翻转 + 边框高亮 -->
+                        <Trigger Property="IsDropDownOpen" Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{DynamicResource JT.ComboBox.FocusBorder}"/>
+                            <Setter TargetName="Arrow" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleY="-1" CenterY="2"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <!-- 列表为空时给个最小高度 -->
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="24"/>
+                        </Trigger>
+
+                        <!-- 禁用 -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background"
+                                    Value="{DynamicResource JT.ComboBox.DisabledBackground}"/>
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource JT.ComboBox.DisabledForeground}"/>
+                            <Setter Property="Cursor" Value="Arrow"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

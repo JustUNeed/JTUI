@@ -1,0 +1,134 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+    xmlns:controls="clr-namespace:JTUI.Controls">
+
+    <!-- ============ 标题栏按钮:最小化(灰色高亮) ============ -->
+    <Style x:Key="JTCaptionButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource JT.CaptionButton.Foreground}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bg" Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bg" Property="Background"
+                                    Value="{DynamicResource JT.CaptionButton.HoverBackground}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bg" Property="Background"
+                                    Value="{DynamicResource JT.CaptionButton.PressedBackground}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============ 标题栏按钮:关闭(红色高亮 + 白色图标) ============ -->
+    <Style x:Key="JTCloseButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource JT.CaptionButton.Foreground}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bg" Background="{TemplateBinding Background}">
+                        <ContentPresenter x:Name="Content"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          TextElement.Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bg" Property="Background"
+                                    Value="{DynamicResource JT.CloseButton.HoverBackground}"/>
+                            <Setter TargetName="Content" Property="TextElement.Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bg" Property="Background"
+                                    Value="{DynamicResource JT.CloseButton.PressedBackground}"/>
+                            <Setter TargetName="Content" Property="TextElement.Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============ JTWindow 默认样式 ============ -->
+    <Style TargetType="{x:Type controls:JTWindow}">
+        <Setter Property="Background" Value="{DynamicResource JT.Window.Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource JT.Window.Foreground}"/>
+        <Setter Property="WindowStyle" Value="None"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:JTWindow}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{DynamicResource JT.Window.Border}"
+                            BorderThickness="1"
+                            Padding="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- 标题栏 -->
+                            <Grid Grid.Row="0"
+                                  Background="{DynamicResource JT.TitleBar.Background}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="{TemplateBinding Title}"
+                                           Foreground="{DynamicResource JT.TitleBar.Foreground}"
+                                           VerticalAlignment="Center"
+                                           Margin="12,0,0,0"
+                                           FontSize="13"/>
+
+                                <StackPanel Grid.Column="1"
+            Orientation="Horizontal"
+            shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Button x:Name="PART_MinButton"
+            Style="{StaticResource JTCaptionButtonStyle}"
+            ToolTip="最小化"
+            Content="&#xE921;"/>
+                                    <Button x:Name="PART_MaxButton"
+            Style="{StaticResource JTCaptionButtonStyle}"
+            ToolTip="最大化"
+            Content="&#xE922;"/>
+                                    <Button x:Name="PART_CloseButton"
+            Style="{StaticResource JTCloseButtonStyle}"
+            ToolTip="关闭"
+            Content="&#xE8BB;"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- 内容区 -->
+                            <ContentPresenter Grid.Row="1"
+                                              Content="{TemplateBinding Content}"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

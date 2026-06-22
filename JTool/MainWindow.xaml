@@ -1,0 +1,135 @@
+﻿<jt:JTWindow x:Class="JTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:jt="clr-namespace:JTUI.Controls;assembly=JTUI"
+        Title="JTUI 演示" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- 菜单栏 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 工具栏 -->
+            <RowDefinition Height="*"/>
+            <!-- 内容区 -->
+        </Grid.RowDefinitions>
+
+        <!-- 文件菜单 -->
+        <Menu Grid.Row="0" HorizontalAlignment="Left">
+
+            <!-- 文件:含一个二级子菜单"最近打开" -->
+            <MenuItem Header="文件(_F)">
+                <MenuItem Header="新建" InputGestureText="Ctrl+N"/>
+                <MenuItem Header="打开" InputGestureText="Ctrl+O"/>
+
+                <!-- 子菜单:鼠标悬停"最近打开"会向右弹出下一级 -->
+                <MenuItem Header="最近打开">
+                    <MenuItem Header="项目A.txt"/>
+                    <MenuItem Header="项目B.txt"/>
+                    <MenuItem Header="项目C.txt"/>
+                    <Separator/>
+                    <MenuItem Header="清除记录"/>
+                </MenuItem>
+
+                <Separator/>
+                <MenuItem Header="保存" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="另存为"/>
+                <Separator/>
+                <MenuItem Header="退出" Click="ExitMenu_Click"/>
+            </MenuItem>
+
+            <!-- 编辑:含更深的三级子菜单演示 -->
+            <MenuItem Header="编辑(_E)">
+                <MenuItem Header="撤销" InputGestureText="Ctrl+Z"/>
+                <MenuItem Header="重做" InputGestureText="Ctrl+Y"/>
+                <Separator/>
+
+                <!-- 二级子菜单 -->
+                <MenuItem Header="转换大小写">
+                    <MenuItem Header="全部大写"/>
+                    <MenuItem Header="全部小写"/>
+
+                    <!-- 三级子菜单:子菜单里还能再嵌套 -->
+                    <MenuItem Header="更多...">
+                        <MenuItem Header="首字母大写"/>
+                        <MenuItem Header="切换大小写"/>
+                    </MenuItem>
+                </MenuItem>
+            </MenuItem>
+
+            <!-- 视图:演示带勾选(Checkable)的子菜单项 -->
+            <MenuItem Header="视图(_V)">
+                <MenuItem Header="显示工具栏" IsCheckable="True" IsChecked="True"/>
+                <MenuItem Header="显示状态栏" IsCheckable="True"/>
+                <Separator/>
+                <MenuItem Header="主题">
+                    <MenuItem Header="浅色" Click="ThemeLight_Click"/>
+                    <MenuItem Header="深色" Click="ThemeDark_Click"/>
+                    <MenuItem Header="跟随系统" Click="ThemeSystem_Click"/>
+                </MenuItem>
+            </MenuItem>
+
+            <MenuItem Header="帮助(_H)">
+                <MenuItem Header="关于"/>
+            </MenuItem>
+        </Menu>
+
+
+        <!-- 顶部工具栏:一行里放所有按钮 -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="12,8">
+            <jt:JTButton Content="切换主题"
+                        
+                        ToolTip="书签"
+                         Click="ToggleTheme_Click"/>
+
+            <jt:JTIconButton Content="&#xED41;" ToolTip="文件夹"/>
+            <jt:JTIconButton Content="&#xE721;" ToolTip="搜索"/>
+            <jt:JTIconButton Content="&#xE8A4;" ToolTip="书签"/>
+        </StackPanel>
+
+        <!-- 内容区 -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="12">
+            <StackPanel>
+
+                <jt:JTTagControl x:Name="Tags"
+                 TagClicked="Tags_TagClicked"
+                 TagRejected="Tags_TagRejected"/>
+                
+                <!-- 直接塞静态项 -->
+                <jt:JTComboBox Width="100" Placeholder="请选择…">
+                    <ComboBoxItem Content="选项 A"/>
+                    <ComboBoxItem Content="选项 B"/>
+                    <ComboBoxItem Content="选项 C"/>
+                </jt:JTComboBox>
+                
+                <jt:JTNumberBox Value="50" Minimum="0" Maximum="100"
+                Step="1" Decimals="0" Label="X" Unit="px" Width="100"/>
+                <jt:JTNumberBox Value="50" Minimum="0" Maximum="100" Step="1" Decimals="0"  Unit="px" Width="100"/>
+                <jt:JTNumberBox Value="50" Minimum="0" Maximum="100" Step="1" Decimals="0"  Width="100"/>
+                <TextBlock Text="右键我试试" Padding="40">
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="剪切" InputGestureText="Ctrl+X"/>
+                            <MenuItem Header="复制" InputGestureText="Ctrl+C"/>
+                            <MenuItem Header="粘贴" InputGestureText="Ctrl+V"/>
+                            <Separator/>
+                            <MenuItem Header="更多操作">
+                                <MenuItem Header="操作一"/>
+                                <MenuItem Header="操作二"/>
+                            </MenuItem>
+                            <Separator/>
+                            <MenuItem Header="删除"/>
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
+                </TextBlock>
+
+                <TextBlock Text="内容区域 — 滚动测试" Margin="0,0,0,8"/>
+                <jt:JTToggleSwitch x:Name="ThemeSwitch"/>
+                
+                <jt:JTTextBox Placeholder="请输入用户名"   Margin="0,0,0,12"/>
+                <jt:JTTextBox Placeholder="圆角更大" CornerRadius="10" Margin="0,0,0,12"/>
+                <TextBlock Text="占位" Height="2000"/>
+                <jt:JTTextBox Text="已禁用" IsEnabled="False"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</jt:JTWindow>

@@ -1,0 +1,86 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:JTUI.Controls">
+
+    <Style TargetType="{x:Type controls:JTTag}">
+        <Setter Property="Background" Value="{DynamicResource JT.Tag.Background}"/>
+        <Setter Property="Foreground" Value="{DynamicResource JT.Tag.Foreground}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:JTTag}">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            SnapsToDevicePixels="True">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- 显示态文本 -->
+                            <TextBlock x:Name="DisplayText"
+                                       Text="{TemplateBinding Text}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Margin="4"
+                                       VerticalAlignment="Center"/>
+
+                            <!-- 删除按钮(悬停才显示) -->
+                            <Border x:Name="PART_Delete"
+                                    Width="16" Height="16"
+                                    Margin="0,0,4,0"
+                                    Background="Transparent"
+                                    CornerRadius="0"
+                                    Cursor="Hand"
+                                    Visibility="Collapsed"
+                                    VerticalAlignment="Center">
+                                <Path Width="7" Height="7"
+                                      Stretch="Fill"
+                                      Stroke="{DynamicResource JT.Tag.DeleteForeground}"
+                                      StrokeThickness="1.2"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      Data="M 0,0 L 1,1 M 1,0 L 0,1"/>
+                            </Border>
+
+                            <!-- 编辑态输入框 -->
+                            <controls:JTTextBox x:Name="PART_TextBox"
+                                                BorderThickness="0"
+                                                Padding="0"
+                                                Margin="8,1,8,1"
+                                                MinWidth="40"
+                                                Background="Transparent"
+                                                FontSize="{TemplateBinding FontSize}"
+                                                VerticalContentAlignment="Center"
+                                                Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <!-- 悬停:高亮 + 显示删除按钮 -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource JT.Tag.HoverBackground}"/>
+                            <Setter TargetName="PART_Delete" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+
+                        <!-- 删除按钮自身悬停:背景变红提示 -->
+                        <Trigger SourceName="PART_Delete" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_Delete" Property="Background"
+                                    Value="{DynamicResource JT.Tag.DeleteHoverBackground}"/>
+                        </Trigger>
+
+                        <!-- 编辑态:隐藏文本与删除,显示输入框 -->
+                        <Trigger Property="IsEditing" Value="True">
+                            <Setter TargetName="DisplayText" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="PART_Delete" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="PART_TextBox" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Bd" Property="Cursor" Value="IBeam"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
