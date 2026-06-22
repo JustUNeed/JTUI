@@ -5,8 +5,10 @@
 		<UseWPF>true</UseWPF>
 		<RootNamespace>JTUI</RootNamespace>
 		<AssemblyName>JTUI</AssemblyName>
+		    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>		
 		<Nullable>enable</Nullable>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,7 +23,7 @@
 	  </Page>
 	
   <PackageReference Include="VirtualizingWrapPanel" Version="2.5.1" />
-
+		<PackageReference Include="SkiaSharp" Version="2.88.8" />
 	</ItemGroup>
 
 </Project>

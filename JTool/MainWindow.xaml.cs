@@ -1,7 +1,13 @@
 ﻿using JTUI.Controls;
 using JTUI.Controls.ImageGrid;
+using JTUI.Controls.Viewer;
+using JTUI.Services;
 using JTUI.Theming;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using static JTUI.Controls.ImageGrid.JTImageGrid;
 
 namespace JTool
 {
@@ -21,8 +27,49 @@ namespace JTool
             };
 
 
-          
+
+            // 左键:复制图片到剪贴板
+            Grid.ImageLeftClick += path =>
+            {
+                try
+                {
+                    var bmp = new BitmapImage();
+                    bmp.BeginInit();
+                    bmp.CacheOption = BitmapCacheOption.OnLoad;   // 读完即释放文件句柄
+                    bmp.UriSource = new Uri(path);
+                    bmp.EndInit();
+                    bmp.Freeze();
+
+                    Clipboard.SetImage(bmp);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"复制失败:{ex.Message}");
+                }
+            };
+
+            // 右键:打开预览窗口
+            Grid.ImageRightClick += path =>
+            {
+                var win = new JTWindow { Width = 1000, Height = 700, Title = "预览" };
+                var viewer = new JTImageViewer { ImagePath = path };   // 自动用同目录构建翻页列表
+                win.Content = viewer;
+                win.Show();
+            };
+
+            Grid.ImageImported += path => MessageBox.Show($"已添加 {System.IO.Path.GetFileName(path)}");
+            Grid.ImportFailed += (reason, src) => MessageBox.Show($"导入失败({reason}):{src}");
+            Grid.ImageDeleted += path => System.IO.File.Delete(path);
+
         }
+
+        private void PasteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Grid.PasteFromClipboard())
+                MessageBox.Show("剪贴板里没有图片");
+        }
+
+
 
         private void ToggleTheme_Click(object sender, RoutedEventArgs e)
         {
@@ -61,22 +108,13 @@ namespace JTool
             => Console.WriteLine($"被拒绝:{e.Text} —— {e.Reason}");
 
 
-        private void Grid_ImageLeftClick(object sender, JTImageEventArgs e)
-        {
-            string path = e.ImagePath;   // 左键点击的图片路径
-        }
 
-        private void Grid_ImageRightClick(object sender, JTImageEventArgs e)
-        {
-            string path = e.ImagePath;   // 右键点击的图片路径
-        }
 
-        private void Grid_ImageDelete(object sender, JTImageEventArgs e)
-        {
-            string path = e.ImagePath;   // 被删除的图片路径
-                                         // 控件已从列表移除;若要删磁盘文件,自己在这里删:
-                                         // System.IO.File.Delete(path);
-        }
+
+
 
     }
+
+
+
 }

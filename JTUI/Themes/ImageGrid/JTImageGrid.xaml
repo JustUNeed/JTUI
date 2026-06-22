@@ -4,34 +4,32 @@
     xmlns:controls="clr-namespace:JTUI.Controls.ImageGrid"
     xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel">
 
+    <controls:HalfThicknessConverter x:Key="JT.HalfThicknessConverter"/>
+    <controls:SquareSizeConverter   x:Key="JT.SquareSizeConverter"/>
 
-        <controls:HalfThicknessConverter x:Key="JT.HalfThicknessConverter"/>
-  
-
-    
     <!-- 单个图片项:正方形、填满裁切 -->
     <DataTemplate x:Key="JT.ImageItem.Template">
         <Border Background="{DynamicResource JT.ImageGrid.CellBackground}"
-            CornerRadius="2" SnapsToDevicePixels="True" ClipToBounds="True">
+                CornerRadius="2" SnapsToDevicePixels="True" ClipToBounds="True">
             <!-- Border 只能有一个子元素,用 Grid 在内部叠层 -->
             <Grid>
                 <Image Source="{Binding Thumbnail}"
-                   Stretch="UniformToFill"
-                   RenderOptions.BitmapScalingMode="LowQuality"/>
+                       Stretch="UniformToFill"
+                       RenderOptions.BitmapScalingMode="LowQuality"/>
 
                 <Button x:Name="DeleteBtn"
-                    Tag="{Binding}"
-                    Width="20" Height="20" Margin="4"
-                    HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Visibility="Collapsed" Cursor="Hand"
-                    Content="&#xE711;"
-                    FontFamily="Segoe MDL2 Assets" FontSize="10"
-                    Foreground="White">
+                        Tag="{Binding}"
+                        Width="20" Height="20" Margin="4"
+                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Visibility="Collapsed" Cursor="Hand"
+                        Content="&#xE711;"
+                        FontFamily="Segoe MDL2 Assets" FontSize="10"
+                        Foreground="White">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="#CC000000" CornerRadius="10">
                                 <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                                                  VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
                     </Button.Template>
@@ -40,14 +38,18 @@
         </Border>
 
         <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding IsMouseOver,
-            RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+            <!-- 悬浮 且 ShowDeleteButton=True 才显示删除按钮 -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsMouseOver,
+                        RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True"/>
+                    <Condition Binding="{Binding ShowDeleteButton,
+                        RelativeSource={RelativeSource AncestorType={x:Type controls:JTImageGrid}}}" Value="True"/>
+                </MultiDataTrigger.Conditions>
                 <Setter TargetName="DeleteBtn" Property="Visibility" Value="Visible"/>
-            </DataTrigger>
+            </MultiDataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
-
-
 
     <!-- 主控件样式 -->
     <Style TargetType="{x:Type controls:JTImageGrid}">
@@ -62,15 +64,21 @@
         <Setter Property="VirtualizingPanel.CacheLengthUnit" Value="Page"/>
         <Setter Property="ItemTemplate" Value="{StaticResource JT.ImageItem.Template}"/>
 
+        <!-- 尺寸由面板的 ItemSize 统一决定(不再依赖 ListBoxItem 上脆弱的 Width 绑定) -->
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
                     <vwp:VirtualizingWrapPanel
-                        Orientation="Horizontal"
-                        SpacingMode="Uniform"/>
+                Orientation="Horizontal"
+                SpacingMode="StartAndEndOnly"
+                StretchItems="False"
+                ItemSize="{Binding ColumnWidth,
+                    RelativeSource={RelativeSource AncestorType={x:Type controls:JTImageGrid}},
+                    Converter={StaticResource JT.SquareSizeConverter}}"/>
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
+
 
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
@@ -78,34 +86,62 @@
                     <Setter Property="Padding" Value="0"/>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-                    <Setter Property="Width" Value="{Binding ColumnWidth,
-                RelativeSource={RelativeSource AncestorType={x:Type controls:JTImageGrid}}}"/>
-                    <Setter Property="Height" Value="{Binding ColumnWidth,
-                RelativeSource={RelativeSource AncestorType={x:Type controls:JTImageGrid}}}"/>
-                    <Setter Property="Margin" Value="{Binding ItemSpacing,
-                RelativeSource={RelativeSource AncestorType={x:Type controls:JTImageGrid}},
-                Converter={StaticResource JT.HalfThicknessConverter}}"/>
+                    <Setter Property="Margin"
+                            Value="{Binding ItemSpacing,
+                                RelativeSource={RelativeSource AncestorType={x:Type controls:JTImageGrid}},
+                                Converter={StaticResource JT.HalfThicknessConverter}}"/>
+                    <Setter Property="Cursor" Value="Hand"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
-                                <Border Background="Transparent">
-                                    <ContentPresenter/>
-                                </Border>
+                                <Grid>
+                                    <!-- 内容 -->
+                                    <Border x:Name="Root" Background="Transparent">
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <!-- 高亮叠层:默认透明,悬浮/选中时显边框与遮罩 -->
+                                    <Border x:Name="Highlight"
+                        CornerRadius="2"
+                        BorderThickness="2"
+                        BorderBrush="Transparent"
+                        Background="Transparent"
+                        IsHitTestVisible="False"
+                        SnapsToDevicePixels="True"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <!-- 悬浮:淡遮罩 + 细边框 -->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Highlight" Property="Background" Value="#22FFFFFF"/>
+                                        <Setter TargetName="Highlight" Property="BorderBrush" Value="#55FFFFFF"/>
+                                    </Trigger>
+                                    <!-- 选中:更明显的高亮边框(用主题色更佳) -->
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Highlight" Property="BorderBrush"
+                            Value="{DynamicResource JT.Accent}"/>
+                                    </Trigger>
+                                    <!-- 按下:轻微压暗,做点击反馈 -->
+                                    <Trigger Property="IsMouseCaptureWithin" Value="True">
+                                        <Setter TargetName="Highlight" Property="Background" Value="#33000000"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
+
                 </Style>
             </Setter.Value>
         </Setter>
 
-
         <Setter Property="Template">
+     
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:JTImageGrid}">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <ScrollViewer Focusable="False"
+                        <ScrollViewer x:Name="PART_ScrollViewer"
+                                      Focusable="False"
+                                      
                                       CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
                                       HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                                       VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"

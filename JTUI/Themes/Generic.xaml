@@ -6,7 +6,7 @@
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/Colors.Light.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTWindow.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/ImageGrid/JTImageGrid.xaml"/>
-
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/Viewer/JTImageViewer.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

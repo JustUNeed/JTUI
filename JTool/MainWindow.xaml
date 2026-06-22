@@ -74,16 +74,17 @@
         </StackPanel>
 
         <!-- 图片瀑布流(独立一行) -->
-        <img:JTImageGrid Grid.Row="2"
+        <img:JTImageGrid  x:Name="Grid"
+            Grid.Row="2"
             Margin="12,0"
-            ImageDirectory="F:\图片\照片\黄俊方\画画用照片\葵"
+                           AllowDragOut="True"
+                          AllowDropImport="True"
+            ImageDirectory="C:\Users\JUNPC\Desktop\葵"
             ColumnWidth="80"
             ThumbnailSize="90"  
-               ItemSpacing="8"
+               ItemSpacing="2"
     ShowDeleteButton="True"
-    ImageLeftClick="Grid_ImageLeftClick"
-    ImageRightClick="Grid_ImageRightClick"
-    ImageDelete="Grid_ImageDelete"/>
+/>
 
         <!-- 内容区 -->
         <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="12">
