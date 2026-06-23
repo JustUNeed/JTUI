@@ -49,6 +49,11 @@ namespace JTUI.Controls.ImageGrid
         {
             ItemsSource = _items;
             AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(OnDeleteButtonClick));
+
+
+            // 新增：自适应高度的两个触发源
+            _items.CollectionChanged += (_, _) => UpdateAutoHeight();
+            SizeChanged += (_, e) => { if (e.WidthChanged) UpdateAutoHeight(); };
         }
 
         public override void OnApplyTemplate()
@@ -90,7 +95,8 @@ namespace JTUI.Controls.ImageGrid
         /// <summary>每个图片格子的边长(像素),默认 180。</summary>
         public static readonly DependencyProperty ColumnWidthProperty =
             DependencyProperty.Register(nameof(ColumnWidth), typeof(double),
-                typeof(JTImageGrid), new FrameworkPropertyMetadata(180.0));
+                typeof(JTImageGrid),
+                new FrameworkPropertyMetadata(180.0, (d, _) => ((JTImageGrid)d).UpdateAutoHeight()));
 
         public double ColumnWidth
         {
@@ -112,7 +118,8 @@ namespace JTUI.Controls.ImageGrid
         /// <summary>图片之间的间隔(像素),默认 6。</summary>
         public static readonly DependencyProperty ItemSpacingProperty =
             DependencyProperty.Register(nameof(ItemSpacing), typeof(double),
-                typeof(JTImageGrid), new FrameworkPropertyMetadata(6.0));
+                typeof(JTImageGrid),
+                new FrameworkPropertyMetadata(6.0, (d, _) => ((JTImageGrid)d).UpdateAutoHeight()));
 
         public double ItemSpacing
         {
@@ -159,6 +166,19 @@ namespace JTUI.Controls.ImageGrid
         }
 
 
+        /// <summary>最多显示的行数，超过则内部滚动。设为 0 表示不限制（恢复默认高度行为）。默认 3。</summary>
+        public static readonly DependencyProperty MaxRowsProperty =
+            DependencyProperty.Register(nameof(MaxRows), typeof(int),
+                typeof(JTImageGrid),
+                new FrameworkPropertyMetadata(3, (d, _) => ((JTImageGrid)d).UpdateAutoHeight()));
+
+        public int MaxRows
+        {
+            get => (int)GetValue(MaxRowsProperty);
+            set => SetValue(MaxRowsProperty, value);
+        }
+
+
 
 
         // ---------- 目录加载 ----------
@@ -193,7 +213,12 @@ namespace JTUI.Controls.ImageGrid
         {
             base.ClearContainerForItemOverride(element, item);
             if (item is JTImageItem vm && _loading.TryGetValue(vm, out var cts))
-                try { cts.Cancel(); } catch { }
+                try { 
+                    cts.Cancel();
+                    _loading.Remove(vm);
+                } catch {
+                
+                }
         }
 
         private async Task LoadAsync(JTImageItem vm)
@@ -473,6 +498,39 @@ namespace JTUI.Controls.ImageGrid
                 _outDragging = false;
             }
         }
+
+
+
+
+        private void UpdateAutoHeight()
+        {
+            if (MaxRows <= 0) { ClearValue(HeightProperty); return; }
+
+            double usable = ActualWidth - Padding.Left - Padding.Right
+                            - BorderThickness.Left - BorderThickness.Right;
+            if (usable <= 0) return;
+
+            int count = _items.Count;
+            if (count == 0) { ClearValue(HeightProperty); return; }
+
+            double cell = ColumnWidth ;     // 一行占位
+            int cols = Math.Max(1, (int)(usable / cell));
+            int rows = (int)Math.Ceiling(count / (double)cols);
+            int show = Math.Min(rows, MaxRows);
+
+            // ★ 关键修正：show 行只需 show 份格子 + (show) 份行距，但末行底部那份不该把第4行挤出来，
+            //   减去 1 份 ItemSpacing，让封顶刚好卡在第 show 行底边。
+            double height = show * ColumnWidth;
+
+            Height = height
+                     + Padding.Top + Padding.Bottom
+                     + BorderThickness.Top + BorderThickness.Bottom;
+        }
+
+
+
+
+
 
 
     }

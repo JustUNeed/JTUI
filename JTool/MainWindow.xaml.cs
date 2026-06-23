@@ -2,6 +2,7 @@
 using JTUI.Controls.FolderBin;
 using JTUI.Controls.ImageGrid;
 using JTUI.Controls.Viewer;
+using JTUI.Notifications;
 using JTUI.Services;
 using JTUI.Theming;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ namespace JTool
         {
             InitializeComponent();
 
-            var dir = @"C:\Users\EWB30\Desktop\qq";
+            var dir = @"C:\Users\JUNPC\Desktop\葵";
             if (System.IO.Directory.Exists(dir))
                 ImageGrid.ImageDirectory = dir;
 
@@ -64,7 +65,7 @@ namespace JTool
             };
 
             ImageGrid.ImageImported += path => MessageBox.Show($"已添加 {System.IO.Path.GetFileName(path)}");
-            ImageGrid.ImportFailed += (reason, src) => MessageBox.Show($"导入失败({reason}):{src}");
+            ImageGrid.ImportFailed += (reason, src) => JTToast.Show("导入失败"); ;
             ImageGrid.ImageDeleted += path => System.IO.File.Delete(path);
 
 
@@ -94,6 +95,11 @@ namespace JTool
 
 
 
+            JTToast.Show("已保存");
+            JTToast.Show("文件已复制到剪贴板", 1500);
+
+            JTToast.Show("已保存");
+            JTToast.Show("文件已复制到剪贴板", 1500);
 
 
         }
@@ -108,8 +114,9 @@ namespace JTool
 
         private void ToggleTheme_Click(object sender, RoutedEventArgs e)
         {
-         
-                JTThemeManager.Toggle();
+
+            JTToast.Show("已保存");
+          //  JTThemeManager.Toggle();
            
        
 

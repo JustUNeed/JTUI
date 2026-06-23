@@ -57,6 +57,7 @@
             <Setter.Value>
                 <ItemsPanelTemplate>
                     <vwp:VirtualizingWrapPanel
+                       
                         Orientation="Horizontal"
                         SpacingMode="StartAndEndOnly"
                         StretchItems="False"
@@ -128,7 +129,8 @@
 
                             <!-- 空列表提示 -->
                             <TextBlock x:Name="EmptyHint"
-                               Text="拖入图片"
+                                              Margin="8"
+                            Text="拖入任意通过创建看板"
                                Foreground="{DynamicResource JT.Foreground}"
                                Opacity="0.45"
                                FontSize="13"

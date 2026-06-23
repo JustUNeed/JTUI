@@ -6,7 +6,9 @@
 
     <!-- 单项:文本左对齐,按宽度省略 -->
     <DataTemplate x:Key="JT.TextItem.Template">
-        <Grid Background="Transparent">
+      
+            <Grid Background="Transparent">
+          
             <TextBlock Text="{Binding Text}"
                        Foreground="{DynamicResource JT.Foreground}"
                        FontSize="13"
@@ -19,8 +21,9 @@
             <jt:JTDeleteBadge x:Name="DeleteBtn"
                               Tag="{Binding}"
                               Visibility="Collapsed"/>
+           
         </Grid>
-
+      
         <DataTemplate.Triggers>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
@@ -39,14 +42,20 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ItemTemplate" Value="{StaticResource JT.TextItem.Template}"/>
+        
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+        <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
 
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical"/>
+                    <VirtualizingStackPanel Orientation="Vertical"/>
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
+
 
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
@@ -60,7 +69,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
-                                <Border x:Name="Root" Background="Transparent" SnapsToDevicePixels="True">
+                                <Border x:Name="Root" Background="Transparent" SnapsToDevicePixels="True" >
                                     <ContentPresenter VerticalAlignment="Center"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -92,7 +101,9 @@
                             </ScrollViewer>
 
                             <TextBlock x:Name="EmptyHint"
-                                       Text="{TemplateBinding EmptyHint}"
+                                                      Margin="8"
+                                        Text="拖入任意文本创建剪贴板"
+                                    
                                        Foreground="{DynamicResource JT.Foreground}"
                                        Opacity="0.45"
                                        FontSize="13"

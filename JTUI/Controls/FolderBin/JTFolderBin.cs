@@ -45,6 +45,10 @@ namespace JTUI.Controls.FolderBin
             GongDragDrop.SetIsDragSource(this, true);
             GongDragDrop.SetIsDropTarget(this, true);
             GongDragDrop.SetDropHandler(this, _dropHandler);
+
+            // 新增：自适应高度
+            _items.CollectionChanged += (_, _) => UpdateAutoHeight();
+            SizeChanged += (_, e) => { if (e.WidthChanged) UpdateAutoHeight(); };
         }
 
         // ---------- 对外事件 ----------
@@ -74,12 +78,12 @@ namespace JTUI.Controls.FolderBin
 
         // ---------- 依赖属性 ----------
 
- 
-   
+
+
         /// <summary>格子宽度(像素),默认 160。</summary>
         public static readonly DependencyProperty ItemWidthProperty =
-            DependencyProperty.Register(nameof(ItemWidth), typeof(double),
-                typeof(JTFolderBin), new FrameworkPropertyMetadata(160.0));
+            DependencyProperty.Register(nameof(ItemWidth), typeof(double), typeof(JTFolderBin),
+                new FrameworkPropertyMetadata(160.0, (d, _) => ((JTFolderBin)d).UpdateAutoHeight()));
         public double ItemWidth
         {
             get => (double)GetValue(ItemWidthProperty);
@@ -88,20 +92,29 @@ namespace JTUI.Controls.FolderBin
 
         /// <summary>格子高度(像素),默认 44。</summary>
         public static readonly DependencyProperty ItemHeightProperty =
-            DependencyProperty.Register(nameof(ItemHeight), typeof(double),
-                typeof(JTFolderBin), new FrameworkPropertyMetadata(44.0));
+            DependencyProperty.Register(nameof(ItemHeight), typeof(double), typeof(JTFolderBin),
+                new FrameworkPropertyMetadata(44.0, (d, _) => ((JTFolderBin)d).UpdateAutoHeight()));
         public double ItemHeight
         {
             get => (double)GetValue(ItemHeightProperty);
             set => SetValue(ItemHeightProperty, value);
         }
 
-
+        /// <summary>最多显示的行数，超过则内部滚动。设为 0 表示不限制。默认 3。</summary>
+        public static readonly DependencyProperty MaxRowsProperty =
+            DependencyProperty.Register(nameof(MaxRows), typeof(int), typeof(JTFolderBin),
+                new FrameworkPropertyMetadata(3, (d, _) => ((JTFolderBin)d).UpdateAutoHeight()));
+        public int MaxRows
+        {
+            get => (int)GetValue(MaxRowsProperty);
+            set => SetValue(MaxRowsProperty, value);
+        }
 
 
         public static readonly DependencyProperty ItemSpacingProperty =
-            DependencyProperty.Register(nameof(ItemSpacing), typeof(double),
-                typeof(JTFolderBin), new FrameworkPropertyMetadata(6.0));
+           DependencyProperty.Register(nameof(ItemSpacing), typeof(double), typeof(JTFolderBin),
+               new FrameworkPropertyMetadata(6.0, (d, _) => ((JTFolderBin)d).UpdateAutoHeight()));
+
         public double ItemSpacing
         {
             get => (double)GetValue(ItemSpacingProperty);
@@ -412,5 +425,33 @@ namespace JTUI.Controls.FolderBin
             }
             return false;
         }
+
+
+
+        private void UpdateAutoHeight()
+        {
+            if (MaxRows <= 0) { ClearValue(HeightProperty); return; }
+
+            double usable = ActualWidth - Padding.Left - Padding.Right
+                            - BorderThickness.Left - BorderThickness.Right;
+            if (usable <= 0) return;
+
+            int count = _items.Count;
+            if (count == 0) { ClearValue(HeightProperty); return; }
+
+            // 列数：用 ItemWidth + ItemSpacing；+ItemSpacing 容忍末列右侧那份间距，避免少算一列
+            int cols = Math.Max(1, (int)((usable + ItemSpacing) / (ItemWidth + ItemSpacing)));
+
+            int rows = (int)Math.Ceiling(count / (double)cols);
+            int show = Math.Min(rows, MaxRows);
+
+            // 行高用 ItemHeight；行之间 (show-1) 份间隙
+            double height = show * ItemHeight ;
+
+            Height = height
+                     + Padding.Top + Padding.Bottom
+                     + BorderThickness.Top + BorderThickness.Bottom;
+        }
+
     }
 }

@@ -126,7 +126,8 @@
                             </ScrollViewer>
 
                             <TextBlock x:Name="EmptyHint"
-                               Text="拖入文件夹"
+                                              Margin="8"
+                                    Text="拖入任意文件夹创建快速链接"
                                Foreground="{DynamicResource JT.Foreground}"
                                Opacity="0.45"
                                FontSize="13"

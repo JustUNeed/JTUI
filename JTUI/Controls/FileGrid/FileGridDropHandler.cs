@@ -31,10 +31,21 @@ namespace JTUI.Controls.FileGrid
 
             // 2) 外部文件拖入
             if (_grid.AllowDropImportInternal &&
-                dropInfo.Data is IDataObject data && data.GetDataPresent(DataFormats.FileDrop))
+       dropInfo.Data is IDataObject data && data.GetDataPresent(DataFormats.FileDrop))
             {
-                dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-                dropInfo.Effects = DragDropEffects.Copy;
+                var paths = data.GetData(DataFormats.FileDrop) as string[];
+                bool hasFile = paths != null && paths.Any(p =>
+                    !string.IsNullOrWhiteSpace(p) && !System.IO.Directory.Exists(p));
+
+                if (hasFile)
+                {
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                    dropInfo.Effects = DragDropEffects.Copy;
+                }
+                else
+                {
+                    dropInfo.Effects = DragDropEffects.None;   // 全是文件夹 → 禁止
+                }
                 return;
             }
 
@@ -54,6 +65,7 @@ namespace JTUI.Controls.FileGrid
                 foreach (var p in paths)
                 {
                     if (string.IsNullOrWhiteSpace(p)) continue;
+                    if (System.IO.Directory.Exists(p)) continue;        // ★ 跳过文件夹，只收文件
                     if (_grid.DistinctInternal && _grid.ContainsPath(p)) continue;
                     var item = new JTFileItem(p);
                     if (insertIndex >= 0 && insertIndex <= _grid.Items_.Count)
@@ -62,6 +74,7 @@ namespace JTUI.Controls.FileGrid
                         _grid.Items_.Add(item);
                     any = true;
                 }
+
                 if (any) _grid.NotifyListChanged();
                 return;
             }

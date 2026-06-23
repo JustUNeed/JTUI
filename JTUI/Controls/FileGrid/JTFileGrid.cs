@@ -31,6 +31,8 @@ namespace JTUI.Controls.FileGrid
 
         private ScrollViewer? _scrollViewer;
 
+
+
         static JTFileGrid()
         {
             DefaultStyleKeyProperty.OverrideMetadata(
@@ -51,6 +53,10 @@ namespace JTUI.Controls.FileGrid
             GongSolutions.Wpf.DragDrop.DragDrop.SetIsDragSource(this, true);
             GongSolutions.Wpf.DragDrop.DragDrop.SetIsDropTarget(this, true);
             GongSolutions.Wpf.DragDrop.DragDrop.SetDropHandler(this, _dropHandler);
+
+
+            _items.CollectionChanged += (_, _) => UpdateAutoHeight();
+            SizeChanged += (_, e) => { if (e.WidthChanged) UpdateAutoHeight(); };
 
         }
 
@@ -156,6 +162,49 @@ namespace JTUI.Controls.FileGrid
 
         internal bool AllowReorderInternal => AllowReorder;
 
+
+
+        public static readonly DependencyProperty MaxRowsProperty =
+    DependencyProperty.Register(nameof(MaxRows), typeof(int), typeof(JTFileGrid),
+        new FrameworkPropertyMetadata(3, (d, _) => ((JTFileGrid)d).UpdateAutoHeight()));
+        public int MaxRows
+        {
+            get => (int)GetValue(MaxRowsProperty);
+            set => SetValue(MaxRowsProperty, value);
+        }
+
+        private void UpdateAutoHeight()
+        {
+            if (MaxRows <= 0) { ClearValue(HeightProperty); return; }
+
+            double usable = ActualWidth - Padding.Left - Padding.Right
+                            - BorderThickness.Left - BorderThickness.Right;
+            if (usable <= 0) return;
+
+            int count = _items.Count;
+            if (count == 0) { ClearValue(HeightProperty); return; }
+
+            double cell = ColumnWidth ;     // 一行占位
+            int cols = Math.Max(1, (int)(usable / cell));
+            int rows = (int)Math.Ceiling(count / (double)cols);
+            int show = Math.Min(rows, MaxRows);
+
+            // ★ 关键修正：show 行只需 show 份格子 + (show) 份行距，但末行底部那份不该把第4行挤出来，
+            //   减去 1 份 ItemSpacing，让封顶刚好卡在第 show 行底边。
+            double height = show * ColumnWidth;
+
+            Height = height
+                     + Padding.Top + Padding.Bottom
+                     + BorderThickness.Top + BorderThickness.Bottom;
+        }
+
+
+
+
+
+
+
+
         // ---------- 数据填充(外部接口) ----------
 
         /// <summary>【初始化/恢复】用一批路径替换整个列表。不触发 ListChanged。</summary>
@@ -208,6 +257,7 @@ namespace JTUI.Controls.FileGrid
         internal bool AddPathSilent(string path)
         {
             if (string.IsNullOrWhiteSpace(path)) return false;
+            if (Directory.Exists(path)) return false;        // ★ 彻底不收文件夹（含 SetItems/AddItem）
             if (Distinct && ContainsPath(path)) return false;
             _items.Add(new JTFileItem(path));
             return true;
@@ -225,9 +275,9 @@ namespace JTUI.Controls.FileGrid
         protected override void ClearContainerForItemOverride(DependencyObject element, object item)
         {
             base.ClearContainerForItemOverride(element, item);
-            if (item is JTFileItem vm && _loading.TryGetValue(vm, out var cts))
-                try { cts.Cancel(); } catch { }
+        
         }
+
 
         private async Task LoadIconAsync(JTFileItem vm)
         {

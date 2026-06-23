@@ -106,4 +106,10 @@
     <SolidColorBrush x:Key="JT.ImageGrid.Background"     Color="#F5F5F5"/>
     <SolidColorBrush x:Key="JT.ImageGrid.CellBackground" Color="#E8E8E8"/>
 
+    <!-- ============ 提示框 Toast ============ -->
+    <SolidColorBrush x:Key="JT.Toast.Background" Color="#F2FFFFFF"/>
+    <SolidColorBrush x:Key="JT.Toast.Foreground" Color="#FF1A1A1A"/>
+    <SolidColorBrush x:Key="JT.Toast.Border"     Color="#22000000"/>
+
+
 </ResourceDictionary>

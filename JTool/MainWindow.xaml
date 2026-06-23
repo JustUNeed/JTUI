@@ -13,13 +13,15 @@
             <!-- 菜单栏 -->
             <RowDefinition Height="Auto"/>
             <!-- 工具栏 -->
+            
+            
             <RowDefinition Height="Auto"/>
             <!-- 文件夹收纳 -->
             <RowDefinition Height="Auto"/>
             <!-- 文件网格 -->
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
             <!-- 图片瀑布流(占主要空间) -->
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <!-- 图片瀑布流(占主要空间) -->
             <RowDefinition Height="*"/>
             <!-- 内容区(滚动) -->
@@ -83,42 +85,48 @@
         </StackPanel>
 
         <!-- 文件夹收纳条 -->
-        <folder:JTFolderBin x:Name="Bin"
+
+        <Border   Grid.Row="2"  Background="#2a2a2a"  CornerRadius="4" Margin="8,2">
+            <folder:JTFolderBin x:Name="Bin" 
                             Grid.Row="2"
-                            Height="120"
-                            Margin="12,0"
-                            ItemWidth="180" ItemHeight="44"
-                            ItemSpacing="6"
+                         MaxRows="2"
+                            ItemWidth="80" ItemHeight="40"
+                            ItemSpacing="4"
                             ShowDeleteButton="True"
                             AllowReorder="True"/>
-
-        <!-- 文件网格 -->
+        </Border>
+        <Border   Grid.Row="3"  Background="#2a2a2a"  CornerRadius="4" Margin="8,2">
+            <!-- 文件网格 -->
         <file:JTFileGrid x:Name="Files"
-                         Grid.Row="3"
-                         Height="160"
-                         Margin="12,8"
-                         ColumnWidth="96" IconSize="40"
+                        
+                         MaxRows="3"
+                      
+                         ColumnWidth="80" IconSize="32" ItemSpacing="2"
                          ShowDeleteButton="True"
                          AllowDropImport="True"/>
-
-        <!-- 图片瀑布流(占主要空间) -->
-        <img:JTImageGrid x:Name="ImageGrid"
-                         Grid.Row="4"
-                         Margin="12,0"
+        </Border>
+        <!-- 图片 -->
+        <Border   Grid.Row="4" Background="#2a2a2a" CornerRadius="4" Margin="8,2">
+            <img:JTImageGrid x:Name="ImageGrid" 
+                        
+                          MaxRows="3"
                          AllowDragOut="True"
                          AllowDropImport="True"
                          ColumnWidth="80"
-                         ThumbnailSize="90"
+                         ThumbnailSize="80"
                          ItemSpacing="2"
                          ShowDeleteButton="True"/>
-
-        <tl:JTTextList x:Name="TextList"
-                    Grid.Row="5"
+        </Border>
+        <Border   Grid.Row="5" Background="#2a2a2a" CornerRadius="4" Margin="8,2">
+            <tl:JTTextList x:Name="TextList"
+                
+                        MaxRows="20"
                    ShowDeleteButton="True"
                    AllowDropImport="True"
                    AllowReorder="True"
                    EmptyHint="拖入文本"/>
-        
+        </Border>
+
         <!-- 内容区 -->
         <ScrollViewer Grid.Row="6" VerticalScrollBarVisibility="Auto" Margin="12">
             <StackPanel>

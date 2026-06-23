@@ -40,6 +40,10 @@ namespace JTUI.Controls.TextList
 
             MouseRightButtonUp += OnMouseRightButtonUp;
             PreviewMouseLeftButtonUp += OnMouseLeftButtonUp;
+
+
+            // 新增：自适应高度
+            _items.CollectionChanged += (_, _) => UpdateAutoHeight();
         }
 
         // ---------- 供 DropHandler 用的内部访问 ----------
@@ -124,6 +128,35 @@ namespace JTUI.Controls.TextList
             get => (bool)GetValue(DistinctProperty);
             set => SetValue(DistinctProperty, value);
         }
+
+
+        /// <summary>最多显示的行数，超过则内部滚动。设为 0 表示不限制。默认 3。</summary>
+        public static readonly DependencyProperty MaxRowsProperty =
+            DependencyProperty.Register(nameof(MaxRows), typeof(int), typeof(JTTextList),
+                new FrameworkPropertyMetadata(3, (d, _) => ((JTTextList)d).UpdateAutoHeight()));
+        public int MaxRows
+        {
+            get => (int)GetValue(MaxRowsProperty);
+            set => SetValue(MaxRowsProperty, value);
+        }
+
+
+
+        private void UpdateAutoHeight()
+        {
+            if (MaxRows <= 0) { ClearValue(HeightProperty); return; }
+
+            int count = _items.Count;
+            if (count == 0) { ClearValue(HeightProperty); return; }
+
+            int show = Math.Min(count, MaxRows);
+
+            Height = show * ItemHeight
+                     + Padding.Top + Padding.Bottom
+                     + BorderThickness.Top + BorderThickness.Bottom;
+        }
+
+
 
         // ---------- 数据填充(外部接口) ----------
 
