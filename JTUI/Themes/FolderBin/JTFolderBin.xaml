@@ -101,11 +101,7 @@
                                             Background="Transparent" IsHitTestVisible="False"
                                             SnapsToDevicePixels="True"/>
                                 </Grid>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Highlight" Property="BorderBrush" Value="{DynamicResource JT.Accent}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
+                       
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>

@@ -67,9 +67,7 @@
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="Root" Property="Background" Value="#1A808080"/>
                                     </Trigger>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Root" Property="Background" Value="#22808080"/>
-                                    </Trigger>
+                                
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>

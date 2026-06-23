@@ -101,15 +101,7 @@
                                         <Setter TargetName="Highlight" Property="Background" Value="#22FFFFFF"/>
                                         <Setter TargetName="Highlight" Property="BorderBrush" Value="#55FFFFFF"/>
                                     </Trigger>
-                                    <!-- 选中:更明显的高亮边框(用主题色更佳) -->
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Highlight" Property="BorderBrush"
-                                                Value="{DynamicResource JT.Accent}"/>
-                                    </Trigger>
-                                    <!-- 按下:轻微压暗,做点击反馈 -->
-                                    <Trigger Property="IsMouseCaptureWithin" Value="True">
-                                        <Setter TargetName="Highlight" Property="Background" Value="#33000000"/>
-                                    </Trigger>
+                                   
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>

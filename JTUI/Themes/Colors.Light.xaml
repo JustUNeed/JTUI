@@ -5,7 +5,8 @@
     <!-- ============ 全局通用 ============ -->
     <SolidColorBrush x:Key="JT.Foreground" Color="#1A1A1A"/>
     <SolidColorBrush x:Key="JT.Accent"     Color="Black"/>
-
+    <SolidColorBrush x:Key="JT.Background" Color="#FFEAEAEA"/>
+    
     <!-- ============ 窗口 ============ -->
     <SolidColorBrush x:Key="JT.Window.Background" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="JT.Window.Foreground" Color="#1A1A1A"/>

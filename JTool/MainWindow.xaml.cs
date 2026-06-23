@@ -19,7 +19,7 @@ namespace JTool
         {
             InitializeComponent();
 
-            var dir = @"C:\Users\JUNPC\Desktop\葵";
+            var dir = @"C:\Users\EWB30\Desktop\qq";
             if (System.IO.Directory.Exists(dir))
                 ImageGrid.ImageDirectory = dir;
 

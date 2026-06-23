@@ -119,14 +119,7 @@
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="Highlight" Property="Background" Value="#1A808080"/>
                                     </Trigger>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Highlight" Property="BorderBrush"
-                                                Value="{DynamicResource JT.Accent}"/>
-                                        <Setter TargetName="Highlight" Property="Background" Value="#22808080"/>
-                                    </Trigger>
-                                    <Trigger Property="IsMouseCaptureWithin" Value="True">
-                                        <Setter TargetName="Highlight" Property="Background" Value="#33000000"/>
-                                    </Trigger>
+                                    
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
