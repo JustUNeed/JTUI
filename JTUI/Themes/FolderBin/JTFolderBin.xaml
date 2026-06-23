@@ -1,13 +1,13 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:JTUI.Controls.FolderBin"
     xmlns:jt="clr-namespace:JTUI.Controls"
-    xmlns:imggrid="clr-namespace:JTUI.Controls.ImageGrid"
+    xmlns:folder="clr-namespace:JTUI.Controls.FolderBin"
+    xmlns:img="clr-namespace:JTUI.Controls.ImageGrid"
     xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel">
 
-    <imggrid:HalfThicknessConverter x:Key="JT.HalfThicknessConverter"/>
-    <controls:SizeFromWidthHeightConverter x:Key="JT.SizeFromWHConverter"/>
+    <img:HalfThicknessConverter            x:Key="JT.HalfThicknessConverter"/>
+    <folder:SizeFromWidthHeightConverter       x:Key="JT.SizeFromWHConverter"/>
 
     <!-- 单个文件夹格子:条形长方形,文字居中可省略 -->
     <DataTemplate x:Key="JT.FolderItem.Template">
@@ -21,21 +21,11 @@
                          VerticalContentAlignment="Center"
                          IsHitTestVisible="False"/>
 
-            <Button x:Name="DeleteBtn"
-                    Tag="{Binding}"
-                    Width="18" Height="18" Margin="3"
-                    HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Visibility="Collapsed" Cursor="Hand"
-                    Content="&#xE711;" FontFamily="Segoe MDL2 Assets"
-                    FontSize="9" Foreground="White">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="#CC000000" CornerRadius="9">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
+            <jt:JTDeleteBadge x:Name="DeleteBtn"
+                        Grid.Row="0"
+                        Tag="{Binding}"
+                        Visibility="Collapsed"/>
+
         </Grid>
 
         <DataTemplate.Triggers>
@@ -49,15 +39,15 @@
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True"/>
-                    <Condition Binding="{Binding ShowDeleteButton, RelativeSource={RelativeSource AncestorType={x:Type controls:JTFolderBin}}}" Value="True"/>
+                    <Condition Binding="{Binding ShowDeleteButton, RelativeSource={RelativeSource AncestorType={x:Type folder:JTFolderBin}}}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="DeleteBtn" Property="Visibility" Value="Visible"/>
             </MultiDataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <Style TargetType="{x:Type controls:JTFolderBin}">
-        <Setter Property="Background" Value="{DynamicResource JT.ImageGrid.Background}"/>
+    <Style TargetType="{x:Type folder:JTFolderBin}">
+
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
@@ -78,9 +68,9 @@
                         <vwp:VirtualizingWrapPanel.ItemSize>
                             <MultiBinding Converter="{StaticResource JT.SizeFromWHConverter}">
                                 <Binding Path="ItemWidth"
-                                         RelativeSource="{RelativeSource AncestorType={x:Type controls:JTFolderBin}}"/>
+                                         RelativeSource="{RelativeSource AncestorType={x:Type folder:JTFolderBin}}"/>
                                 <Binding Path="ItemHeight"
-                                         RelativeSource="{RelativeSource AncestorType={x:Type controls:JTFolderBin}}"/>
+                                         RelativeSource="{RelativeSource AncestorType={x:Type folder:JTFolderBin}}"/>
                             </MultiBinding>
                         </vwp:VirtualizingWrapPanel.ItemSize>
                     </vwp:VirtualizingWrapPanel>
@@ -96,7 +86,7 @@
                     <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                     <Setter Property="Margin"
                             Value="{Binding ItemSpacing,
-                                RelativeSource={RelativeSource AncestorType={x:Type controls:JTFolderBin}},
+                                RelativeSource={RelativeSource AncestorType={x:Type folder:JTFolderBin}},
                                 Converter={StaticResource JT.HalfThicknessConverter}}"/>
                     <Setter Property="Cursor" Value="Hand"/>
                     <Setter Property="Template">
@@ -125,21 +115,40 @@
 
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:JTFolderBin}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <ScrollViewer x:Name="PART_ScrollViewer" Focusable="False"
-                                      CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
-                                      HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                      VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                                      Padding="{TemplateBinding Padding}">
-                            <ItemsPresenter/>
-                        </ScrollViewer>
+                <ControlTemplate TargetType="{x:Type folder:JTFolderBin}">
+                    <Border Background="Transparent"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ScrollViewer"
+                                  Focusable="False"
+                                  CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
+                                  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                  Padding="{TemplateBinding Padding}">
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+
+                            <TextBlock x:Name="EmptyHint"
+                               Text="拖入文件夹"
+                               Foreground="{DynamicResource JT.Foreground}"
+                               Opacity="0.45"
+                               FontSize="13"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               IsHitTestVisible="False"
+                               Visibility="Collapsed"/>
+                        </Grid>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter TargetName="EmptyHint" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+
     </Style>
 
 </ResourceDictionary>

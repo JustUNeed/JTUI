@@ -3,21 +3,26 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:jt="clr-namespace:JTUI.Controls;assembly=JTUI"
         xmlns:img="clr-namespace:JTUI.Controls.ImageGrid;assembly=JTUI"
-         xmlns:file="clr-namespace:JTUI.Controls.FileGrid;assembly=JTUI"    
-            xmlns:folder="clr-namespace:JTUI.Controls.FolderBin;assembly=JTUI"  
-             
-             
-        Title="JTUI 演示" Height="450" Width="800">
+        xmlns:file="clr-namespace:JTUI.Controls.FileGrid;assembly=JTUI"
+        xmlns:folder="clr-namespace:JTUI.Controls.FolderBin;assembly=JTUI"
+             xmlns:tl="clr-namespace:JTUI.Controls.TextList;assembly=JTUI"
+        Title="JTUI 演示" Height="700" Width="900">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <!-- 菜单栏 -->
             <RowDefinition Height="Auto"/>
             <!-- 工具栏 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 文件夹收纳 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 文件网格 -->
+            <RowDefinition Height="2*"/>
+            <!-- 图片瀑布流(占主要空间) -->
             <RowDefinition Height="*"/>
-            <!-- 图片网格 -->
+            <!-- 图片瀑布流(占主要空间) -->
             <RowDefinition Height="*"/>
-            <!-- 内容区 -->
+            <!-- 内容区(滚动) -->
         </Grid.RowDefinitions>
 
         <!-- 文件菜单 -->
@@ -71,59 +76,68 @@
 
         <!-- 顶部工具栏 -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="12,8">
-            <jt:JTButton Content="切换主题" ToolTip="书签" Click="ToggleTheme_Click"/>
+            <jt:JTButton Content="切换主题" ToolTip="切换主题" Click="ToggleTheme_Click"/>
             <jt:JTIconButton Content="&#xED41;" ToolTip="文件夹"/>
             <jt:JTIconButton Content="&#xE721;" ToolTip="搜索"/>
             <jt:JTIconButton Content="&#xE8A4;" ToolTip="书签"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="2" Height="500">
-            <folder:JTFolderBin x:Name="Bin" Height="200"
-                 ItemWidth="180" ItemHeight="44"
-                ItemSpacing="6"
-                ShowDeleteButton="True"
-                AllowReorder="True"/>
-            
-            <file:JTFileGrid   Height="200"
-                        x:Name="Files"
-               ColumnWidth="96" IconSize="40"
-               ShowDeleteButton="True"
-               AllowDropImport="True"
-              />
+        <!-- 文件夹收纳条 -->
+        <folder:JTFolderBin x:Name="Bin"
+                            Grid.Row="2"
+                            Height="120"
+                            Margin="12,0"
+                            ItemWidth="180" ItemHeight="44"
+                            ItemSpacing="6"
+                            ShowDeleteButton="True"
+                            AllowReorder="True"/>
 
+        <!-- 文件网格 -->
+        <file:JTFileGrid x:Name="Files"
+                         Grid.Row="3"
+                         Height="160"
+                         Margin="12,8"
+                         ColumnWidth="96" IconSize="40"
+                         ShowDeleteButton="True"
+                         AllowDropImport="True"/>
 
-            <!-- 图片瀑布流(独立一行) -->
-            <img:JTImageGrid  x:Name="Grid"
+        <!-- 图片瀑布流(占主要空间) -->
+        <img:JTImageGrid x:Name="ImageGrid"
+                         Grid.Row="4"
+                         Margin="12,0"
+                         AllowDragOut="True"
+                         AllowDropImport="True"
+                         ColumnWidth="80"
+                         ThumbnailSize="90"
+                         ItemSpacing="2"
+                         ShowDeleteButton="True"/>
+
+        <tl:JTTextList x:Name="TextList"
+                    Grid.Row="5"
+                   ShowDeleteButton="True"
+                   AllowDropImport="True"
+                   AllowReorder="True"
+                   EmptyHint="拖入文本"/>
         
-            Margin="12,0"
-                           AllowDragOut="True"
-                          AllowDropImport="True"
-            ImageDirectory="C:\Users\JUNPC\Desktop\葵"
-            ColumnWidth="80"
-            ThumbnailSize="90"  
-               ItemSpacing="2"
-    ShowDeleteButton="True"
-/>
-        </StackPanel>
         <!-- 内容区 -->
-        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="12">
+        <ScrollViewer Grid.Row="6" VerticalScrollBarVisibility="Auto" Margin="12">
             <StackPanel>
                 <jt:JTTagControl x:Name="Tags"
                                  TagClicked="Tags_TagClicked"
                                  TagRejected="Tags_TagRejected"/>
 
-                <jt:JTComboBox Width="100" Placeholder="请选择…">
+                <jt:JTComboBox Width="100" Placeholder="请选择…" Margin="0,8">
                     <ComboBoxItem Content="选项 A"/>
                     <ComboBoxItem Content="选项 B"/>
                     <ComboBoxItem Content="选项 C"/>
                 </jt:JTComboBox>
 
                 <jt:JTNumberBox Value="50" Minimum="0" Maximum="100"
-                                Step="1" Decimals="0" Label="X" Unit="px" Width="100"/>
+                                Step="1" Decimals="0" Label="X" Unit="px" Width="100" Margin="0,4"/>
                 <jt:JTNumberBox Value="50" Minimum="0" Maximum="100"
-                                Step="1" Decimals="0" Unit="px" Width="100"/>
+                                Step="1" Decimals="0" Unit="px" Width="100" Margin="0,4"/>
                 <jt:JTNumberBox Value="50" Minimum="0" Maximum="100"
-                                Step="1" Decimals="0" Width="100"/>
+                                Step="1" Decimals="0" Width="100" Margin="0,4"/>
 
                 <TextBlock Text="右键我试试" Padding="40">
                     <TextBlock.ContextMenu>
@@ -145,7 +159,7 @@
                 <TextBlock Text="内容区域 — 滚动测试" Margin="0,0,0,8"/>
                 <jt:JTToggleSwitch x:Name="ThemeSwitch"/>
 
-                <jt:JTTextBox Placeholder="请输入用户名" Margin="0,0,0,12"/>
+                <jt:JTTextBox Placeholder="请输入用户名" Margin="0,8,0,12"/>
                 <jt:JTTextBox Placeholder="圆角更大" CornerRadius="10" Margin="0,0,0,12"/>
                 <TextBlock Text="占位" Height="2000"/>
                 <jt:JTTextBox Text="已禁用" IsEnabled="False"/>

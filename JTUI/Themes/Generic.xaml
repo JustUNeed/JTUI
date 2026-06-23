@@ -9,6 +9,8 @@
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/Viewer/JTImageViewer.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/FileGrid/JTFileGrid.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/FolderBin/JTFolderBin.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTDeleteBadge.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/TextList/JTTextList.xaml"/>
 
     </ResourceDictionary.MergedDictionaries>
 

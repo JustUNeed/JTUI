@@ -19,6 +19,11 @@ namespace JTool
         {
             InitializeComponent();
 
+            var dir = @"C:\Users\JUNPC\Desktop\葵";
+            if (System.IO.Directory.Exists(dir))
+                ImageGrid.ImageDirectory = dir;
+
+
             // 自定义校验规则(可选):禁止逗号、限制 20 字
             Tags.TagValidator = raw =>
             {
@@ -30,7 +35,7 @@ namespace JTool
 
 
             // 左键:复制图片到剪贴板
-            Grid.ImageLeftClick += path =>
+            ImageGrid.ImageLeftClick += path =>
             {
                 try
                 {
@@ -50,7 +55,7 @@ namespace JTool
             };
 
             // 右键:打开预览窗口
-            Grid.ImageRightClick += path =>
+            ImageGrid.ImageRightClick += path =>
             {
                 var win = new JTWindow { Width = 1000, Height = 700, Title = "预览" };
                 var viewer = new JTImageViewer { ImagePath = path };   // 自动用同目录构建翻页列表
@@ -58,9 +63,9 @@ namespace JTool
                 win.Show();
             };
 
-            Grid.ImageImported += path => MessageBox.Show($"已添加 {System.IO.Path.GetFileName(path)}");
-            Grid.ImportFailed += (reason, src) => MessageBox.Show($"导入失败({reason}):{src}");
-            Grid.ImageDeleted += path => System.IO.File.Delete(path);
+            ImageGrid.ImageImported += path => MessageBox.Show($"已添加 {System.IO.Path.GetFileName(path)}");
+            ImageGrid.ImportFailed += (reason, src) => MessageBox.Show($"导入失败({reason}):{src}");
+            ImageGrid.ImageDeleted += path => System.IO.File.Delete(path);
 
 
 
@@ -95,7 +100,7 @@ namespace JTool
 
         private void PasteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!Grid.PasteFromClipboard())
+            if (!ImageGrid.PasteFromClipboard())
                 MessageBox.Show("剪贴板里没有图片");
         }
 

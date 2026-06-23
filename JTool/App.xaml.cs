@@ -13,6 +13,7 @@ namespace JTool
         {
             base.OnStartup(e);
             // 优先用上次保存的主题,没保存过则默认 Dark
+
             JTThemeManager.Initialize(JTTheme.Light);
         }
 
