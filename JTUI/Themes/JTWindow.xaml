@@ -78,57 +78,94 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:JTWindow}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{DynamicResource JT.Window.Border}"
-                            BorderThickness="1"
-                            Padding="{TemplateBinding BorderThickness}">
+                    <Border x:Name="RootBorder"
+        Background="{TemplateBinding Background}"
+        BorderBrush="{DynamicResource JT.Window.Border}"
+        BorderThickness="1"
+        Padding="{TemplateBinding BorderThickness}">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30"/>
+                                <RowDefinition x:Name="TitleRow" Height="30"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!-- 标题栏 -->
-                            <Grid Grid.Row="0"
-                                  Background="{DynamicResource JT.TitleBar.Background}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                            <!-- 内容区 -->
+                            <ContentPresenter x:Name="ContentHost"
+                              Grid.Row="1"
+                              Content="{TemplateBinding Content}"/>
 
-                                <TextBlock Grid.Column="0"
-                                           Text="{TemplateBinding Title}"
-                                           Foreground="{DynamicResource JT.TitleBar.Foreground}"
-                                           VerticalAlignment="Center"
-                                           Margin="12,0,0,0"
-                                           FontSize="13"/>
-
-                                <StackPanel Grid.Column="1"
-            Orientation="Horizontal"
-            shell:WindowChrome.IsHitTestVisibleInChrome="True">
-                                    <Button x:Name="PART_MinButton"
-            Style="{StaticResource JTCaptionButtonStyle}"
-            ToolTip="最小化"
-            Content="&#xE921;"/>
-                                    <Button x:Name="PART_MaxButton"
-            Style="{StaticResource JTCaptionButtonStyle}"
-            ToolTip="最大化"
-            Content="&#xE922;"/>
-                                    <Button x:Name="PART_CloseButton"
-            Style="{StaticResource JTCloseButtonStyle}"
-            ToolTip="关闭"
-            Content="&#xE8BB;"/>
-                                </StackPanel>
+                            <!-- 标题栏背景 + 标题文字(常规模式用;沉浸模式透明) -->
+                            <Grid x:Name="TitleBar"
+                  Grid.Row="0"
+                  Background="{DynamicResource JT.TitleBar.Background}">
+                                <TextBlock x:Name="TitleText"
+                           Text="{TemplateBinding Title}"
+                           Foreground="{DynamicResource JT.TitleBar.Foreground}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Margin="12,0,0,0"
+                           FontSize="13"/>
                             </Grid>
 
-                            <!-- 内容区 -->
-                            <ContentPresenter Grid.Row="1"
-                                              Content="{TemplateBinding Content}"/>
+                            <!-- 三个按钮:独立提到最上层,永远贴右上角,永远可点 -->
+                            <StackPanel x:Name="CaptionButtons"
+                        Grid.Row="0"
+                        Grid.RowSpan="2"
+                        Panel.ZIndex="100"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                                <Button x:Name="PART_MinButton"
+                        Style="{StaticResource JTCaptionButtonStyle}"
+                        ToolTip="最小化"
+                        Content="&#xE921;"/>
+                                <Button x:Name="PART_MaxButton"
+                        Style="{StaticResource JTCaptionButtonStyle}"
+                        ToolTip="最大化"
+                        Content="&#xE922;"/>
+                                <Button x:Name="PART_CloseButton"
+                        Style="{StaticResource JTCloseButtonStyle}"
+                        ToolTip="关闭"
+                        Content="&#xE8BB;"/>
+                            </StackPanel>
                         </Grid>
                     </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <!-- 无标题栏:连按钮也去掉 -->
+                        <Trigger Property="TitleBarMode" Value="NoTitleBar">
+                            <!-- 去掉浅边线,纯背景色 -->
+                            <Setter TargetName="RootBorder" Property="BorderThickness" Value="0"/>
+                            
+                            <Setter TargetName="TitleBar" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="CaptionButtons" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="TitleRow" Property="Height" Value="0"/>
+                            <Setter TargetName="ContentHost" Property="Grid.Row" Value="0"/>
+                            <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2"/>
+                        </Trigger>
+
+                        <!-- 沉浸:标题行归零、内容铺满;标题栏透明、标题文字隐藏;按钮保留 -->
+                        <Trigger Property="TitleBarMode" Value="Immersive">
+                            <Setter TargetName="TitleRow" Property="Height" Value="0"/>
+                            <Setter TargetName="ContentHost" Property="Grid.Row" Value="0"/>
+                            <Setter TargetName="ContentHost" Property="Grid.RowSpan" Value="2"/>
+
+                            <Setter TargetName="TitleBar" Property="Background" Value="Transparent"/>
+                            <Setter TargetName="TitleBar" Property="Height" Value="30"/>
+                            <Setter TargetName="TitleBar" Property="VerticalAlignment" Value="Top"/>
+                            <Setter TargetName="TitleText" Property="Visibility" Value="Collapsed"/>
+                            <!-- CaptionButtons 不动,本来就在最上层 -->
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
+
             </Setter.Value>
         </Setter>
     </Style>
+
 
 </ResourceDictionary>

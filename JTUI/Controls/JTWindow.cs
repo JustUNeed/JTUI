@@ -47,18 +47,23 @@ namespace JTUI.Controls
 
             // 双击/拖拽仍会最大化,保留溢出补偿
             StateChanged += OnStateChanged;
+
+            ApplyChromeForMode(TitleBarMode);
         }
 
         private void OnStateChanged(object? sender, EventArgs e)
         {
-            // 最大化时窗口会向外溢出约等于可缩放边框的厚度,
-            // 补一圈 BorderThickness 把内容缩回屏幕可视区域。
-            BorderThickness = WindowState == WindowState.Maximized
-                ? new Thickness(7)
-                : new Thickness(0);
+            // NoTitleBar 模式不做溢出补偿,保持纯净铺满
+            if (TitleBarMode == JTTitleBarMode.NoTitleBar)
+                BorderThickness = new Thickness(0);
+            else
+                BorderThickness = WindowState == WindowState.Maximized
+                    ? new Thickness(7)
+                    : new Thickness(0);
 
             UpdateMaxButtonGlyph();
         }
+
 
         public override void OnApplyTemplate()
         {
@@ -117,6 +122,60 @@ namespace JTUI.Controls
                 typeof(JTTheme),
                 typeof(JTWindow),
                 new FrameworkPropertyMetadata(JTTheme.System, OnThemePropertyChanged));
+
+
+
+        public static readonly DependencyProperty TitleBarModeProperty =
+    DependencyProperty.Register(
+        nameof(TitleBarMode),
+        typeof(JTTitleBarMode),
+        typeof(JTWindow),
+        new FrameworkPropertyMetadata(
+            JTTitleBarMode.Normal,
+            OnTitleBarModeChanged));
+
+        /// <summary>标题栏显示模式:常规 / 无标题栏 / 沉浸。</summary>
+        public JTTitleBarMode TitleBarMode
+        {
+            get => (JTTitleBarMode)GetValue(TitleBarModeProperty);
+            set => SetValue(TitleBarModeProperty, value);
+        }
+
+        private static void OnTitleBarModeChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is JTWindow w)
+                w.ApplyChromeForMode((JTTitleBarMode)e.NewValue);
+        }
+
+        /// <summary>
+        /// 不同模式下调整 WindowChrome 的标题栏可拖拽高度。
+        /// NoTitleBar 模式没有标题栏区域,CaptionHeight 设为 0,避免顶部 32px 误吞鼠标事件;
+        /// 其余模式保留 32px 拖拽区。
+        /// </summary>
+        private void ApplyChromeForMode(JTTitleBarMode mode)
+        {
+            var chrome = WindowChrome.GetWindowChrome(this);
+            if (chrome is null) return;
+
+            if (mode == JTTitleBarMode.NoTitleBar)
+            {
+                // 纯无边框:不允许边缘拖动改尺寸,也没有标题栏拖拽区
+                chrome.CaptionHeight = 0;
+                chrome.ResizeBorderThickness = new Thickness(0);
+            }
+            else
+            {
+                chrome.CaptionHeight = 32;
+                chrome.ResizeBorderThickness = new Thickness(6);
+            }
+        }
+
+
+
+
+
+
 
         /// <summary>窗口主题。设置后会切换整个应用的 JTUI 主题。</summary>
         public JTTheme Theme
