@@ -3,6 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:jt="clr-namespace:JTUI.Controls;assembly=JTUI"
         xmlns:img="clr-namespace:JTUI.Controls.ImageGrid;assembly=JTUI"
+         xmlns:file="clr-namespace:JTUI.Controls.FileGrid;assembly=JTUI"    
+            xmlns:folder="clr-namespace:JTUI.Controls.FolderBin;assembly=JTUI"  
+             
+             
         Title="JTUI 演示" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -73,9 +77,24 @@
             <jt:JTIconButton Content="&#xE8A4;" ToolTip="书签"/>
         </StackPanel>
 
-        <!-- 图片瀑布流(独立一行) -->
-        <img:JTImageGrid  x:Name="Grid"
-            Grid.Row="2"
+        <StackPanel Grid.Row="2" Height="500">
+            <folder:JTFolderBin x:Name="Bin" Height="200"
+                 ItemWidth="180" ItemHeight="44"
+                ItemSpacing="6"
+                ShowDeleteButton="True"
+                AllowReorder="True"/>
+            
+            <file:JTFileGrid   Height="200"
+                        x:Name="Files"
+               ColumnWidth="96" IconSize="40"
+               ShowDeleteButton="True"
+               AllowDropImport="True"
+              />
+
+
+            <!-- 图片瀑布流(独立一行) -->
+            <img:JTImageGrid  x:Name="Grid"
+        
             Margin="12,0"
                            AllowDragOut="True"
                           AllowDropImport="True"
@@ -85,7 +104,7 @@
                ItemSpacing="2"
     ShowDeleteButton="True"
 />
-
+        </StackPanel>
         <!-- 内容区 -->
         <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="12">
             <StackPanel>

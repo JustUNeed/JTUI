@@ -1,4 +1,5 @@
 ﻿using JTUI.Controls;
+using JTUI.Controls.FolderBin;
 using JTUI.Controls.ImageGrid;
 using JTUI.Controls.Viewer;
 using JTUI.Services;
@@ -60,6 +61,35 @@ namespace JTool
             Grid.ImageImported += path => MessageBox.Show($"已添加 {System.IO.Path.GetFileName(path)}");
             Grid.ImportFailed += (reason, src) => MessageBox.Show($"导入失败({reason}):{src}");
             Grid.ImageDeleted += path => System.IO.File.Delete(path);
+
+
+
+
+
+
+
+            // 投放结果反馈
+            Bin.Dropped += r =>
+            {
+                switch (r.Kind)
+                {
+                    case JTFolderDropKind.MovedFile:
+                        Console.WriteLine($"已移动 {r.Source} → {r.ResultPath}"); break;
+                    case JTFolderDropKind.DownloadedUrl:
+                        Console.WriteLine($"已下载 {r.Source} → {r.ResultPath}"); break;
+                    case JTFolderDropKind.Failed:
+                        Console.WriteLine($"失败 {r.Source}: {r.Error}"); break;
+                }
+            };
+
+            // 点击格子(外部决定:比如打开文件夹)
+            Bin.ItemClicked += path =>
+                Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = $"\"{path}\"", UseShellExecute = true });
+
+
+
+
+
 
         }
 
