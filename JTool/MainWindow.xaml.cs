@@ -5,6 +5,7 @@ using JTUI.Controls.Viewer;
 using JTUI.Notifications;
 using JTUI.Services;
 using JTUI.Theming;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,10 +16,50 @@ namespace JTool
 {
     public partial class MainWindow : JTWindow
     {
+        public ObservableCollection<string> Cards { get; } =
+            new() { "0", "1", "2", "3", "4", "5", "6", "7" };
 
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = this;   // ★ 关键:让 {Binding Cards} 能找到上面的属性
+
+
+            // 拖入:把外部文件路径翻译成字符串项,控件负责插入集合
+            Grid.DropHandler = (data, target, index) =>
+            {
+                if (data.GetDataPresent(DataFormats.FileDrop) &&
+                    data.GetData(DataFormats.FileDrop) is string[] files)
+                    return files;                       // 返回要插入的对象(这里就是路径字符串)
+
+                if (data.GetDataPresent(DataFormats.Text))
+                    return new[] { (object)data.GetData(DataFormats.Text)! };
+
+                return null;
+            };
+
+            // 可选:控制哪些拖入被接受(影响鼠标效果)
+            Grid.CanAcceptDrop = (data, target) =>
+                data.GetDataPresent(DataFormats.FileDrop) || data.GetDataPresent(DataFormats.Text);
+
+            // 拖出:把选中项打包成文本(若是真实文件路径,可改塞 FileDrop)
+            Grid.DragOutHandler = items =>
+            {
+                var paths = items.OfType<string>().ToArray();
+                if (paths.Length == 0) return null;
+
+                var dataObj = new DataObject();
+                dataObj.SetData(DataFormats.Text, string.Join(Environment.NewLine, paths));
+                // 若 paths 是真实存在的文件,可同时:
+                // dataObj.SetData(DataFormats.FileDrop, paths);
+                return dataObj;
+            };
+
+            Grid.ItemsDropped += (_, e) => System.Diagnostics.Debug.WriteLine($"拖入 {e.InsertedItems.Count} 项");
+            Grid.ItemsReordered += (_, e) =>
+     System.Diagnostics.Debug.WriteLine($"排序 {e.OldIndex}->{e.NewIndex},数据顺序:{string.Join(",", Cards)}");
+
 
             var dir = @"C:\Users\JUNPC\Desktop\葵";
             if (System.IO.Directory.Exists(dir))
@@ -74,23 +115,23 @@ namespace JTool
 
 
 
-            // 投放结果反馈
-            Bin.Dropped += r =>
-            {
-                switch (r.Kind)
-                {
-                    case JTFolderDropKind.MovedFile:
-                        Console.WriteLine($"已移动 {r.Source} → {r.ResultPath}"); break;
-                    case JTFolderDropKind.DownloadedUrl:
-                        Console.WriteLine($"已下载 {r.Source} → {r.ResultPath}"); break;
-                    case JTFolderDropKind.Failed:
-                        Console.WriteLine($"失败 {r.Source}: {r.Error}"); break;
-                }
-            };
+            //// 投放结果反馈
+            //Bin.Dropped += r =>
+            //{
+            //    switch (r.Kind)
+            //    {
+            //        case JTFolderDropKind.MovedFile:
+            //            Console.WriteLine($"已移动 {r.Source} → {r.ResultPath}"); break;
+            //        case JTFolderDropKind.DownloadedUrl:
+            //            Console.WriteLine($"已下载 {r.Source} → {r.ResultPath}"); break;
+            //        case JTFolderDropKind.Failed:
+            //            Console.WriteLine($"失败 {r.Source}: {r.Error}"); break;
+            //    }
+            //};
 
-            // 点击格子(外部决定:比如打开文件夹)
-            Bin.ItemClicked += path =>
-                Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = $"\"{path}\"", UseShellExecute = true });
+            //// 点击格子(外部决定:比如打开文件夹)
+            //Bin.ItemClicked += path =>
+            //    Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = $"\"{path}\"", UseShellExecute = true });
 
 
 
@@ -102,6 +143,15 @@ namespace JTool
             JTToast.Show("文件已复制到剪贴板", 1500);
 
 
+        }
+
+
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement fe && fe.DataContext is { } item)
+                Grid.DeleteItem(item);
+            e.Handled = true;
         }
 
         private void PasteButton_Click(object sender, RoutedEventArgs e)

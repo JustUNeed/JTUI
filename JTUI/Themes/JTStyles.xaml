@@ -17,6 +17,8 @@
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTTagControl.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTIcons.xaml"/>
 
+        <ResourceDictionary Source="pack://application:,,,/JTUI;component/Themes/JTGridList.xaml"/>
+
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
