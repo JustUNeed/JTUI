@@ -111,5 +111,11 @@
     <SolidColorBrush x:Key="JT.Toast.Foreground" Color="#FF1A1A1A"/>
     <SolidColorBrush x:Key="JT.Toast.Border"     Color="#22000000"/>
 
+    <!-- ============ 图标开关 ============ -->
+    <SolidColorBrush x:Key="JT.IconToggle.CheckedBackground"      Color="#D0D0D0"/>
+    <SolidColorBrush x:Key="JT.IconToggle.CheckedHoverBackground" Color="#C0C0C0"/>
+    <SolidColorBrush x:Key="JT.IconToggle.CheckedForeground"      Color="#1A1A1A"/>
+
+
 
 </ResourceDictionary>

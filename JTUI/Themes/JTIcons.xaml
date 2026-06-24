@@ -1,0 +1,45 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============================================================ -->
+    <!-- JTUI 统一图标:24x24 画布,线条式,2px 线宽,圆角端点      -->
+    <!-- 用法见文件底部说明                                          -->
+    <!-- ============================================================ -->
+
+    <!-- 图钉(固定/置顶):斜放图钉外形 -->
+    <Geometry x:Key="JT.Icon.Pin">
+        M14.5,3 L21,9.5 L18.2,12.3 L17,11 L11,17 L13,19 L7,19
+        M11,13 L4,20
+    </Geometry>
+
+    <!-- 设置(齿轮):8 齿,中心圆孔 -->
+    <Geometry x:Key="JT.Icon.Setting">
+        M12,9 A3,3 0 1 0 12,15 A3,3 0 1 0 12,9 Z
+        M12,2 L12,5 M12,19 L12,22
+        M4.2,4.2 L6.3,6.3 M17.7,17.7 L19.8,19.8
+        M2,12 L5,12 M19,12 L22,12
+        M4.2,19.8 L6.3,17.7 M17.7,6.3 L19.8,4.2
+    </Geometry>
+
+    <!-- 关闭(叉叉) -->
+    <Geometry x:Key="JT.Icon.Close">
+        M5,5 L19,19 M19,5 L5,19
+    </Geometry>
+
+    <!-- 统一线条图标的 Path 样式:继承前景色,线宽/端点一致 -->
+    <Style x:Key="JTLineIcon" TargetType="Path">
+        <Setter Property="Stroke" Value="{Binding Path=(TextElement.Foreground),
+                                          RelativeSource={RelativeSource AncestorType=Control}}"/>
+        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="StrokeStartLineCap" Value="Round"/>
+        <Setter Property="StrokeEndLineCap" Value="Round"/>
+        <Setter Property="StrokeLineJoin" Value="Round"/>
+        <Setter Property="Fill" Value="Transparent"/>
+        <Setter Property="Stretch" Value="Uniform"/>
+        <Setter Property="Width" Value="16"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+</ResourceDictionary>
